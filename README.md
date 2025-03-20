@@ -20,6 +20,8 @@ The plugin supports both CPU encoding and GPU encoding on Linux using VAAPI.
 - Unzip [ffmpeg_encoder_plugin.dvcp.bundle.zip](https://github.com/EdvinNilsson/ffmpeg_encoder_plugin/releases/latest/download/ffmpeg_encoder_plugin.dvcp.bundle.zip) to `/opt/resolve/IOPlugins/`.
 - Install FFmpeg using the package manager (e.g. `sudo apt install ffmpeg`, `sudo pacman -S ffmpeg`).
 
+There is also an AUR package at [davinci-ffmpeg-encoder-plugin](https://aur.archlinux.org/packages/davinci-ffmpeg-encoder-plugin) for Arch Linux and Arch-based distributions.
+
 ###  Windows
 - Unzip [ffmpeg_encoder_plugin.dvcp.bundle.zip](https://github.com/EdvinNilsson/ffmpeg_encoder_plugin/releases/latest/download/ffmpeg_encoder_plugin.dvcp.bundle.zip) to `%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\IOPlugins\`.
 
