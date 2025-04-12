@@ -188,19 +188,6 @@ StatusCode FFmpegEncoder::DoOpen(HostBufferRef* p_pBuff) {
         return errAlloc;
     }
 
-    if (useVaapi) {
-        if (!((hwFrame = av_frame_alloc()))) {
-            return errAlloc;
-        }
-        if (int err; (err = av_hwframe_get_buffer(ctx->hw_frames_ctx, hwFrame, 0)) < 0) {
-            g_Log(logLevelError, "FFmpeg Plugin :: Failed to allocate HW frame. %s", av_err2str(err));
-            return errAlloc;
-        }
-        if (!hwFrame->hw_frames_ctx) {
-            return errAlloc;
-        }
-    }
-
     p_pBuff->SetProperty(pIOPropMagicCookie, propTypeUInt8, ctx->extradata, ctx->extradata_size);
     const uint32_t fourCC = encoderInfo.fourCC == 'avc1' ? 'avcC' : 0;
     p_pBuff->SetProperty(pIOPropMagicCookieType, propTypeUInt32, &fourCC, 1);
@@ -269,20 +256,33 @@ StatusCode FFmpegEncoder::DoProcess(HostBufferRef* p_pBuff) {
         }
 
         if (useVaapi) {
+            AVFrame* hwFrame = av_frame_alloc();
+            if (hwFrame == nullptr) return errAlloc;
+
+            if (int err; (err = av_hwframe_get_buffer(ctx->hw_frames_ctx, hwFrame, 0)) < 0) {
+                g_Log(logLevelError, "FFmpeg Plugin :: Failed to allocate HW frame. %s", av_err2str(err));
+                av_frame_free(&hwFrame);
+                return errAlloc;
+            }
+
             if (int err; (err = av_hwframe_transfer_data(hwFrame, swFrame, 0)) < 0) {
                 g_Log(logLevelError, "FFmpeg Plugin :: Error while transferring frame data to surface. %s",
                       av_err2str(err));
+                av_frame_free(&hwFrame);
                 return errUnsupported;
             }
 
+            p_pBuff->UnlockBuffer();
+
             hwFrame->pts = pts;
             ret = avcodec_send_frame(ctx, hwFrame);
+
+            av_frame_free(&hwFrame);
         } else {
             swFrame->pts = pts;
             ret = avcodec_send_frame(ctx, swFrame);
+            p_pBuff->UnlockBuffer();
         }
-
-        p_pBuff->UnlockBuffer();
     }
 
     if (ret == AVERROR_EOF) {
@@ -406,5 +406,4 @@ FFmpegEncoder::~FFmpegEncoder() {
     if (hwDeviceCtx != nullptr) av_buffer_unref(&hwDeviceCtx);
     if (pkt != nullptr) av_packet_free(&pkt);
     if (swFrame != nullptr) av_frame_free(&swFrame);
-    if (hwFrame != nullptr) av_frame_free(&hwFrame);
 }

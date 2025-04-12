@@ -46,7 +46,6 @@ class FFmpegEncoder : public IPluginCodecRef {
     AVBufferRef* hwDeviceCtx{};
     AVPacket* pkt{};
     AVFrame* swFrame{};
-    AVFrame* hwFrame{};
 };
 
 }
