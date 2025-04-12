@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+#include <string>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -19,6 +21,8 @@ struct EncoderInfo {
     uint8_t vSubsampling{};
     int32_t qualityModes{};
     uint8_t qp[3]{};
+    std::map<int, std::string> presets{};
+    int defaultPreset{};
 };
 
 }

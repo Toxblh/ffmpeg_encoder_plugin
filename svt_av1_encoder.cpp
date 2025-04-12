@@ -13,6 +13,23 @@ const EncoderInfo SvtAv1Encoder::encoderInfo = {
     .vSubsampling = 2,
     .qualityModes = CRF | VBR,
     .qp = {1, 35, 63},
+    .presets =
+        {
+            {0, "0"},
+            {1, "1"},
+            {2, "2"},
+            {3, "3"},
+            {4, "4"},
+            {5, "5"},
+            {6, "6"},
+            {7, "7"},
+            {8, "8"},
+            {9, "9"},
+            {10, "10"},
+            {11, "11"},
+            {12, "12"},
+        },
+    .defaultPreset = 8,
 };
 
 SvtAv1Encoder::SvtAv1Encoder() { FFmpegEncoder::encoderInfo = encoderInfo; }

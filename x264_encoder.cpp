@@ -13,6 +13,19 @@ const EncoderInfo X264Encoder::encoderInfo = {
     .vSubsampling = 2,
     .qualityModes = CQP | CRF | VBR,
     .qp = {0, 23, 51},
+    .presets =
+        {
+            {0, "ultrafast"},
+            {1, "superfast"},
+            {2, "veryfast"},
+            {3, "faster"},
+            {4, "fast"},
+            {5, "medium"},
+            {6, "slow"},
+            {7, "slower"},
+            {8, "veryslow"},
+        },
+    .defaultPreset = 5,
 };
 
 X264Encoder::X264Encoder() { FFmpegEncoder::encoderInfo = encoderInfo; }

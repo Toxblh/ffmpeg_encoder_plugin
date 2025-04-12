@@ -32,6 +32,7 @@ void UISettingsController::Load(IPropertyProvider* values) {
 
     values->GetINT32(qpId.c_str(), qp);
     values->GetINT32(bitrateId.c_str(), bitRate);
+    values->GetINT32(presetId.c_str(), preset);
 }
 
 StatusCode UISettingsController::Render(HostListRef* settingsList) const {
@@ -57,14 +58,34 @@ void UISettingsController::InitDefaults() {
     qualityMode = CRF;
     qp = encoderInfo.qp[1];
     bitRate = 6000;
+    preset = encoderInfo.defaultPreset;
 
     const std::string prefix = std::string("ffmpeg_") + encoderInfo.encoder + "_";
     qualityModeId = prefix + "q_mode";
     qpId = prefix + "qp";
     bitrateId = prefix + "bitrate";
+    presetId = prefix + "preset";
 }
 
 StatusCode UISettingsController::RenderQuality(HostListRef* settingsList) const {
+    {
+        HostUIConfigEntryRef item(presetId);
+
+        std::vector<std::string> textsVec;
+        std::vector<int> valuesVec;
+
+        for (const auto& [key, value] : encoderInfo.presets) {
+            valuesVec.push_back(key);
+            textsVec.emplace_back(value);
+        }
+
+        item.MakeComboBox("Encoder Preset", textsVec, valuesVec, preset);
+        if (!item.IsSuccess() || !settingsList->Append(&item)) {
+            g_Log(logLevelError, "FFmpeg Plugin :: Failed to populate encoder preset UI entry");
+            return errFail;
+        }
+    }
+
     {
         HostUIConfigEntryRef item(qualityModeId);
 
@@ -133,3 +154,5 @@ QualityMode UISettingsController::GetQualityMode() const { return qualityMode; }
 int32_t UISettingsController::GetQP() const { return std::max<int>(0, qp); }
 
 int32_t UISettingsController::GetBitRate() const { return bitRate * 1000; }
+
+int32_t UISettingsController::GetPreset() const { return preset; }

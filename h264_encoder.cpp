@@ -13,6 +13,8 @@ const EncoderInfo H264Encoder::encoderInfo = {
     .vSubsampling = 2,
     .qualityModes = CQP | VBR,
     .qp = {1, 20, 51},
+    .presets = {{0, "Speed"}, {1, "Balanced"}, {2, "Quality"}},
+    .defaultPreset = 1,
 };
 
 H264Encoder::H264Encoder() { FFmpegEncoder::encoderInfo = encoderInfo; }

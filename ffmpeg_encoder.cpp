@@ -215,6 +215,16 @@ void FFmpegEncoder::ApplyOptions(AVCodecContext* ctx, UISettingsController& sett
             ctx->bit_rate = settings.GetBitRate();
             break;
     }
+
+    if (useVaapi) {
+        constexpr int preEncode = 1 << 3;
+        constexpr int VBAQ = 1 << 4;
+        ctx->compression_level = settings.GetPreset() << 1 | preEncode | VBAQ | 1;
+    } else {
+        if (const auto preset = encoderInfo.presets.find(settings.GetPreset()); preset != encoderInfo.presets.end()) {
+            av_opt_set(ctx->priv_data, "preset", preset->second.c_str(), 0);
+        }
+    }
 }
 
 StatusCode FFmpegEncoder::DoProcess(HostBufferRef* p_pBuff) {

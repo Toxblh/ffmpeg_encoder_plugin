@@ -13,6 +13,8 @@ const EncoderInfo Av1Encoder::encoderInfo = {
     .vSubsampling = 2,
     .qualityModes = CQP | VBR,
     .qp = {1, 25, 63},
+    .presets = {{0, "Speed"}, {1, "Balanced"}, {2, "Quality"}},
+    .defaultPreset = 1,
 };
 
 Av1Encoder::Av1Encoder() { FFmpegEncoder::encoderInfo = encoderInfo; }

@@ -13,6 +13,8 @@ const EncoderInfo H265Encoder::encoderInfo = {
     .vSubsampling = 2,
     .qualityModes = CQP | VBR,
     .qp = {1, 25, 51},
+    .presets = {{0, "Speed"}, {1, "Balanced"}, {2, "Quality"}},
+    .defaultPreset = 1,
 };
 
 H265Encoder::H265Encoder() { FFmpegEncoder::encoderInfo = encoderInfo; }

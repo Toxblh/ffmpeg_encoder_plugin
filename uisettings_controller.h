@@ -25,6 +25,7 @@ class UISettingsController final {
     QualityMode GetQualityMode() const;
     int32_t GetQP() const;
     int32_t GetBitRate() const;
+    int32_t GetPreset() const;
 
    private:
     HostCodecConfigCommon commonProps;
@@ -33,10 +34,12 @@ class UISettingsController final {
     QualityMode qualityMode{};
     int32_t qp{};
     int32_t bitRate{};
+    int32_t preset{};
 
     std::string qualityModeId;
     std::string qpId;
     std::string bitrateId;
+    std::string presetId;
 };
 
 }
