@@ -201,7 +201,12 @@ StatusCode FFmpegEncoder::DoOpen(HostBufferRef* p_pBuff) {
 void FFmpegEncoder::ApplyOptions(AVCodecContext* ctx, UISettingsController& settings) {
     switch (settings.GetQualityMode()) {
         case CQP:
-            av_opt_set_int(ctx->priv_data, "qp", settings.GetQP(), 0);
+            if (useVaapi) {
+                av_opt_set(ctx->priv_data, "rc_mode", "CQP", 0);
+                ctx->global_quality = encoderInfo.fourCC == 'av01' ? settings.GetQP() * 4 : settings.GetQP();
+            } else {
+                av_opt_set_int(ctx->priv_data, "qp", settings.GetQP(), 0);
+            }
             break;
         case CRF:
             av_opt_set_int(ctx->priv_data, "crf", settings.GetQP(), 0);
